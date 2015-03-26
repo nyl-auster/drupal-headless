@@ -12,7 +12,7 @@ function ionic_menu() {
     'access arguments' => array('access content'),
     'page callback'    => '%method_api_users',
   );
-  $items['api/users/%user'] = array(
+  $items['api/users/%'] = array(
     'http methods' => array('GET'),
     'access arguments' => array('access content'),
     'page arguments' => array(2),
@@ -35,7 +35,13 @@ function GET_api_users() {
 }
 
 function GET_api_users_detail($uid) {
-  $user = user_load(1);
+  $user = user_load($uid);
+  if (!$user) {
+    return array(
+      'errors' => array('No user found with this id.'),
+      'data' => array(),
+    );
+  }
   return array(
     'data' => array(
       'name' => check_plain($user->name),

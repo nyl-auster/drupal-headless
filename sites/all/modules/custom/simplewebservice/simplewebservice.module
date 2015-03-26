@@ -30,9 +30,11 @@ function simplewebservice_menu_alter(&$items) {
   // by our custom simplewebservice page callback.
   foreach ($items as $id => $item) {
     if (!empty($items[$id]['http methods'])) {
-      $items[$id]['page arguments'] = empty($item['page arguments']) ? array() : $item['page arguments'];
-      $items[$id]['page arguments'] = array($items[$id]);
       if (empty($items[$id]['format']) || $items[$id]['format'] == 'json') {
+        $items[$id]['theme arguments'] = array(
+          'http methods' => $items[$id]['http methods'],
+          'page callback' =>  $items[$id]['page callback'],
+        );
         $items[$id]['page callback'] = 'simplewebservice_page_json_callback';
       }
       else {
@@ -57,18 +59,24 @@ function simplewebservice_delivery_json_callback($result) {
  */
 function simplewebservice_page_json_callback($menu_item) {
 
-  if (!in_array($_SERVER['REQUEST_METHOD'], $menu_item['http methods'])) {
+  $router_item = menu_get_item();
+ // print_r($router_item);
+
+  if (!in_array($_SERVER['REQUEST_METHOD'], $router_item['theme_arguments']['http methods'])) {
     drupal_json_output(array('errors' => array('http method not allowed')));
     drupal_exit();
   }
 
+
+  // make sur we accept external http requests.
   header('Access-Control-Allow-Origin: *');
   header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
   header('Access-Control-Allow-Headers: Origin, Content-Type, Accept, Authorization, X-Request-With');
   header('Access-Control-Allow-Credentials: true');
 
-  $callback = str_replace("%method", $_SERVER['REQUEST_METHOD'], $menu_item['page callback']);
-  $response = call_user_func_array($callback, $menu_item['page arguments']);
+
+  $callback = str_replace("%method", $_SERVER['REQUEST_METHOD'], $router_item['theme_arguments']['page callback']);
+  $response = call_user_func_array($callback, $router_item['page_arguments']);
 
   drupal_json_output($response);
   drupal_exit();
