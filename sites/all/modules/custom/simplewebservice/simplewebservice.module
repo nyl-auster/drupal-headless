@@ -26,7 +26,7 @@
  */
 function simplewebservice_menu_alter(&$items) {
 
-// search for menu items declaring a "webservice" key, and change their page callback
+  // search for menu items declaring a "webservice" key, and change their page callback
   // by our custom simplewebservice page callback.
   foreach ($items as $id => $item) {
     if (!empty($items[$id]['http methods'])) {
@@ -42,6 +42,7 @@ function simplewebservice_menu_alter(&$items) {
       }
     }
   }
+
 }
 
 function simplewebservice_delivery_json_callback($result) {
@@ -53,27 +54,21 @@ function simplewebservice_delivery_json_callback($result) {
 
 /**
  * Special menu page callback for wrapping simplewebservices hook menu items.
- *
- * @param array $menu_item :
- *   the original drupal menu item we have altered to use this custom service page callback.
  */
-function simplewebservice_page_json_callback($menu_item) {
+function simplewebservice_page_json_callback() {
 
   $router_item = menu_get_item();
- // print_r($router_item);
 
   if (!in_array($_SERVER['REQUEST_METHOD'], $router_item['theme_arguments']['http methods'])) {
     drupal_json_output(array('errors' => array('http method not allowed')));
     drupal_exit();
   }
 
-
   // make sur we accept external http requests.
   header('Access-Control-Allow-Origin: *');
   header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
   header('Access-Control-Allow-Headers: Origin, Content-Type, Accept, Authorization, X-Request-With');
   header('Access-Control-Allow-Credentials: true');
-
 
   $callback = str_replace("%method", $_SERVER['REQUEST_METHOD'], $router_item['theme_arguments']['page callback']);
   $response = call_user_func_array($callback, $router_item['page_arguments']);
@@ -83,6 +78,6 @@ function simplewebservice_page_json_callback($menu_item) {
 
 }
 
-function simplewebservice_page_unknwon_callback($menu_item) {
+function simplewebservice_page_unknwon_callback() {
   return "Unknown page callback";
 }

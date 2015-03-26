@@ -28,7 +28,6 @@ function GET_api_users() {
   $query->addField('u', 'uid');
   $query->condition('status', 1);
   $users = $query->execute()->fetchAll();
-
   return array(
     'data' => $users
   );
