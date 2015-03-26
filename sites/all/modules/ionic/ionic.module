@@ -26,17 +26,19 @@ function GET_api_users() {
   $query->addField('u', 'uid');
   $query->condition('status', 1);
   $users_datas = $query->execute()->fetchAll();
+
   $users = array();
   foreach ($users_datas as $i => $user_datas) {
     $user = user_load($user_datas->uid);
-    $users[$i]['uid'] = $user->uid;
-    $users[$i]['mail'] = $user->mail;
-    $users[$i]['name'] = $user->name;
+    $users[$i] = new stdClass();
+    $users[$i]->uid = $user->uid;
+    $users[$i]->mail = $user->mail;
+    $users[$i]->name = $user->name;
     if ($user->picture) {
-      $users[$user->uid]['picture'] = file_create_url($user->picture->uri);
+      $users[$i]->picture = file_create_url($user->picture->uri);
     }
     else {
-      $users[$i]['picture'] = '';
+      $users[$i]->picture = '';
     }
   }
   return array(
