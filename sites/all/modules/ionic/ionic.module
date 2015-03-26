@@ -27,6 +27,8 @@ function ionic_menu() {
 }
 
 /**
+ * Log a user to drupal rest
+ *
  * @rest string name
  * @rest string password
  */
@@ -44,6 +46,11 @@ function POST_api_auth_login() {
 
 }
 
+/**
+ * Get users
+ *
+ * @return array
+ */
 function GET_api_users() {
 
   $query = db_select('users', 'u');
@@ -72,6 +79,11 @@ function GET_api_users() {
   );
 }
 
+/**
+ * Create a new user
+ *
+ * @return array
+ */
 function POST_api_users() {
 
   $values = get_datas_from_json_post_request();
@@ -116,6 +128,12 @@ function POST_api_users() {
 
 }
 
+/**
+ * Get user details
+ *
+ * @param $uid
+ * @return array
+ */
 function GET_api_users_detail($uid) {
   $user = user_load($uid);
   if (!$user) {
