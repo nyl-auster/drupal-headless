@@ -33,7 +33,7 @@ function GET_api_users() {
 
     $user = user_load($user_datas->uid);
     $users[$i] = new stdClass();
-    $users[$i]->uid = $user->uid;
+    $users[$i]->id = $user->uid;
     $users[$i]->mail = $user->mail;
     $users[$i]->name = $user->name;
     if ($user->picture) {
@@ -102,7 +102,7 @@ function GET_api_users_detail($uid) {
   }
   return array(
     'data' => array(
-      'uid' => check_plain($user->uid),
+      'id' => check_plain($user->uid),
       'name' => check_plain($user->name),
       'mail' => check_plain($user->mail),
       'picture' => !empty($user->picture) ? file_create_url($user->picture->uri) : '',
