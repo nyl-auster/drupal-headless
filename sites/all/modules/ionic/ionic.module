@@ -45,7 +45,7 @@ function GET_api_users_detail($uid) {
     'data' => array(
       'uid' => check_plain($user->uid),
       'name' => check_plain($user->name),
-      'email' => check_plain($user->mail),
+      'mail' => check_plain($user->email),
     ),
   );
 }
