@@ -18,7 +18,30 @@ function ionic_menu() {
     'page arguments' => array(2),
     'page callback'    => '%method_api_users_detail',
   );
+  $items['api/auth/login'] = array(
+    'http methods' => array('POST'),
+    'access arguments' => array('access content'),
+    'page callback'    => '%method_api_auth_login',
+  );
   return $items;
+}
+
+/**
+ * @rest string name
+ * @rest string password
+ */
+function POST_api_auth_login() {
+  $datas = get_datas_from_json_post_request();
+  if ($uid = user_authenticate($datas->name, $datas->password)) {
+    $array = array('uid' => $uid);
+    user_login_submit(array(), $array);
+    user_login_finalize($login_array);
+    return array(
+      'errors' => array(),
+      'messages' => t('User has been successfully login')
+    );
+  }
+
 }
 
 function GET_api_users() {
@@ -72,6 +95,7 @@ function POST_api_users() {
   $new_user = array(
     'name' => $values->name,
     'mail' => $values->mail,
+    'init' => $values->mail,
     'pass' => user_password(),
     'status' => 1,
     'access' => REQUEST_TIME,
@@ -85,6 +109,7 @@ function POST_api_users() {
   _user_mail_notify('register_no_approval_required', $user);
 
   return array(
+    'errors' => array(),
     'messages' => 'User created',
     'data' => $user,
   );
@@ -96,11 +121,12 @@ function GET_api_users_detail($uid) {
   if (!$user) {
     drupal_add_http_header('Status', 404);
     return array(
-      'messages' => array('User not found'),
+      'errors' => array('User not found'),
       'data' => array(),
     );
   }
   return array(
+    'errors' => array(),
     'data' => array(
       'id' => check_plain($user->uid),
       'name' => check_plain($user->name),
