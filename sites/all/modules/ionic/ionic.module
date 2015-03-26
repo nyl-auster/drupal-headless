@@ -1,0 +1,45 @@
+<?php
+/**
+ * http://jsonapi.org/
+ */
+
+/**
+ * Implements hook_menu
+ */
+function ionic_menu() {
+  $items['api/users'] = array(
+    'http methods' => array('GET'),
+    'access arguments' => array('access content'),
+    'page callback'    => '%method_api_users',
+  );
+  $items['api/users/%user'] = array(
+    'http methods' => array('GET'),
+    'access arguments' => array('access content'),
+    'page arguments' => array(2),
+    'page callback'    => '%method_api_users_detail',
+  );
+  return $items;
+}
+
+function GET_api_users() {
+  $query = db_select('users', 'u');
+  $query->addField('u', 'name');
+  $query->addField('u', 'mail');
+  $query->addField('u', 'uid');
+  $query->condition('status', 1);
+  $users = $query->execute()->fetchAll();
+
+  return array(
+    'data' => $users
+  );
+}
+
+function GET_api_users_detail($uid) {
+  $user = user_load(1);
+  return array(
+    'data' => array(
+      'name' => check_plain($user->name),
+      'email' => check_plain($user->mail),
+    ),
+  );
+}

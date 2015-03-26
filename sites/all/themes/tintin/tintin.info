@@ -1,0 +1,5 @@
+name = tintin
+description = a subtheme of okcdesign
+base theme = okcdesign
+engine = phptemplate
+core = 7.x

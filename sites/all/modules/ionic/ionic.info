@@ -1,0 +1,6 @@
+name = Ionic module
+description = REST services Drupal 7
+core = 7.x
+dependencies[] = simplewebservice
+
+;plugins

@@ -1,0 +1,6 @@
+name = Simple webservice
+description = Helpers to centralisze, create, log and debug http REST webservices with drupal hook_menu
+core = 7.x
+
+
+
