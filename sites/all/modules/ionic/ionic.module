@@ -41,6 +41,7 @@ function GET_api_users() {
       $users[$i]->picture = '';
     }
   }
+
   return array(
     'data' => $users
   );
@@ -59,6 +60,7 @@ function GET_api_users_detail($uid) {
       'uid' => check_plain($user->uid),
       'name' => check_plain($user->name),
       'mail' => check_plain($user->mail),
+      'picture' => !empty($user->picture) ? file_create_url($user->picture->uri) : '',
     ),
   );
 }
