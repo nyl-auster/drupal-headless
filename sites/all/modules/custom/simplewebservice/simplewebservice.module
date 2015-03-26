@@ -78,6 +78,12 @@ function simplewebservice_page_json_callback() {
 
 }
 
+function get_datas_from_json_post_request() {
+  $http_body = file_get_contents("php://input");
+  $values = json_decode($http_body);
+  return $values;
+}
+
 function simplewebservice_page_unknwon_callback() {
   return "Unknown page callback";
 }

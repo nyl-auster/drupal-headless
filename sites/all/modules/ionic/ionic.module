@@ -8,7 +8,7 @@
  */
 function ionic_menu() {
   $items['api/users'] = array(
-    'http methods' => array('GET'),
+    'http methods' => array('GET', 'POST'),
     'access arguments' => array('access content'),
     'page callback'    => '%method_api_users',
   );
@@ -22,6 +22,7 @@ function ionic_menu() {
 }
 
 function GET_api_users() {
+
   $query = db_select('users', 'u');
   $query->addField('u', 'uid');
   $query->condition('status', 1);
@@ -29,6 +30,7 @@ function GET_api_users() {
 
   $users = array();
   foreach ($users_datas as $i => $user_datas) {
+
     $user = user_load($user_datas->uid);
     $users[$i] = new stdClass();
     $users[$i]->uid = $user->uid;
@@ -47,11 +49,54 @@ function GET_api_users() {
   );
 }
 
+function POST_api_users() {
+
+  $values = get_datas_from_json_post_request();
+
+  $existing_user = user_load_by_name($values->name);
+  if ($existing_user) {
+    drupal_add_http_header('Status', 403);
+    return array(
+      "errors" => array('A user already exists with name ' . check_plain($values->name))
+    );
+  }
+
+  $existing_user = user_load_by_mail($values->mail);
+  if ($existing_user) {
+    drupal_add_http_header('Status', 403);
+    return array(
+      "errors" => array('User already exists with email ' . check_plain($values->mail))
+    );
+  }
+
+  $new_user = array(
+    'name' => $values->name,
+    'mail' => $values->mail,
+    'pass' => user_password(),
+    'status' => 1,
+    'access' => REQUEST_TIME,
+    'roles' => array(), // No other roles than Authenticated
+    //'roles' => array('10' => '10', '11' => '11'), // If you want to specify additional roles, the numbers are role_id's
+  );
+
+  $user = user_save(NULL, $new_user);
+
+  // send a mail to user so that it can confirm its email.
+  _user_mail_notify('register_no_approval_required', $user);
+
+  return array(
+    'messages' => 'User created',
+    'data' => $user,
+  );
+
+}
+
 function GET_api_users_detail($uid) {
   $user = user_load($uid);
   if (!$user) {
+    drupal_add_http_header('Status', 404);
     return array(
-      'errors' => array('No user found with this id.'),
+      'messages' => array('User not found'),
       'data' => array(),
     );
   }
