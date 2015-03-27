@@ -135,7 +135,12 @@ function POST_api_users() {
  * @return array
  */
 function GET_api_users_detail($uid) {
-  $user = user_load($uid);
+  //$user = user_load($uid);
+  $user = new stdClass();
+  $user->uid = 1;
+  $user->name = 'yann';
+  $user->mail = 'yann';
+  $user->picture = '';
   if (!$user) {
     drupal_add_http_header('Status', 404);
     return array(
