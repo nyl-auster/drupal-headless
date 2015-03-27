@@ -35,7 +35,8 @@ function simplewebservice_menu_alter(&$items) {
           'http methods' => $items[$id]['http methods'],
           'page callback' =>  $items[$id]['page callback'],
         );
-        $items[$id]['page callback'] = 'simplewebservice_page_json_callback';
+        $items[$id]['delivery callback'] = 'simplewebservice_page_json_callback';
+        //$items[$id]['page callback'] = 'simplewebservice_page_json_callback';
       }
       else {
         $items[$id]['page callback'] = 'simplewebservice_page_unknwon_callback';
