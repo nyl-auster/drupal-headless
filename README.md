@@ -1,0 +1,1 @@
+RewriteRule api/users/ api/users/index

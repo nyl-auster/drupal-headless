@@ -16,6 +16,7 @@ Options +FollowSymLinks
 # Make Drupal handle any 404 errors.
 ErrorDocument 404 /index.php
 
+
 # Set the default handler.
 DirectoryIndex index.php index.html index.htm
 
@@ -67,6 +68,8 @@ DirectoryIndex index.php index.html index.htm
   # even when running as CGI or FastCGI.
   RewriteRule ^ - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
 
+  RewriteRule api/users/ api/users/index
+
   # Block access to "hidden" directories whose names begin with a period. This
   # includes directories used by version control systems such as Subversion or
   # Git to store control files. Files whose names begin with a period, as well
@@ -103,7 +106,7 @@ DirectoryIndex index.php index.html index.htm
   # VirtualDocumentRoot and the rewrite rules are not working properly.
   # For example if your site is at http://example.com/drupal uncomment and
   # modify the following line:
-  # RewriteBase /drupal
+  # RewriteBase /drupal-rest
   #
   # If your site is running in a VirtualDocumentRoot at http://example.com/,
   # uncomment the following line:
@@ -115,6 +118,8 @@ DirectoryIndex index.php index.html index.htm
   RewriteCond %{REQUEST_FILENAME} !-d
   RewriteCond %{REQUEST_URI} !=/favicon.ico
   RewriteRule ^ index.php [L]
+
+
 
   # Rules to correctly serve gzip compressed CSS and JS files.
   # Requires both mod_rewrite and mod_headers to be enabled.
@@ -141,3 +146,4 @@ DirectoryIndex index.php index.html index.htm
     </FilesMatch>
   </IfModule>
 </IfModule>
+
