@@ -1,29 +1,85 @@
 <?php
 /**
- * http://jsonapi.org/
+ *
  */
+function ionic_init() {
+  /*
+  $alias = drupal_get_path_alias('api/users');
+  if ($alias == 'api/users') {
+    $path = array(
+      'source' => 'api/users/all',
+      'alias'  => 'api/users'
+    );
+    path_save($path);
+  }
+  */
+
+}
+
 
 /**
  * Implements hook_menu
  */
 function ionic_menu() {
-  $items['api/users'] = array(
+
+  $items = array();
+  // do not user "api/users" because our cache system will create a "users" directory,
+  // so we won't be able to create a "users" file to cache json.
+  // create a path alias from api/users to api/users/all will make our entry points
+  // compatible with common pratices.
+
+  $items['api/users/index'] = array(
     'http methods' => array('GET', 'POST'),
     'access arguments' => array('access content'),
     'page callback'    => '%method_api_users',
   );
-  $items['api/users/%'] = array(
+
+  $items['api/users/%user'] = array(
     'http methods' => array('GET'),
     'access arguments' => array('access content'),
     'page arguments' => array(2),
     'page callback'    => '%method_api_users_detail',
   );
+
   $items['api/auth/login'] = array(
     'http methods' => array('POST'),
     'access arguments' => array('access content'),
     'page callback'    => '%method_api_auth_login',
   );
   return $items;
+}
+
+/**
+ * Hook entity update
+ * @param $entity
+ * @param $type
+ */
+function ionic_entity_update($entity, $type) {
+  //var_dump($entity);exit;
+  if ($type == 'user') {
+    if (file_exists('api/users')) {
+      unlink("api/users");
+    }
+    if (file_exists('api/users/' . $entity->uid)) {
+      unlink("api/users/" . $entity->uid);
+    }
+  }
+}
+
+/**
+ * Hook entity insert
+ * @param $entity
+ * @param $type
+ */
+function ionic_entity_insert($entity, $type) {
+  if ($type == 'user') {
+    if (file_exists('api/users')) {
+      unlink("api/users");
+    }
+    if (file_exists('api/users/' . $entity->uid)) {
+      unlink("api/users/" . $entity->uid);
+    }
+  }
 }
 
 /**
@@ -134,8 +190,7 @@ function POST_api_users() {
  * @param $uid
  * @return array
  */
-function GET_api_users_detail($uid) {
-  $user = user_load($uid);
+function GET_api_users_detail($user) {
   if (!$user) {
     drupal_add_http_header('Status', 404);
     return array(

@@ -35,25 +35,17 @@ function simplewebservice_menu_alter(&$items) {
           'http methods' => $items[$id]['http methods'],
           'page callback' =>  $items[$id]['page callback'],
         );
-        $items[$id]['delivery callback'] = 'simplewebservice_page_json_callback';
-        //$items[$id]['page callback'] = 'simplewebservice_page_json_callback';
+        $items[$id]['delivery callback'] = 'simplewebservice_delivery_json_callback';
       }
     }
   }
 
 }
 
-function simplewebservice_delivery_json_callback($result) {
-  header('Access-Control-Allow-Origin: *');
-  header('Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept');
-  drupal_json_output($result);
-  drupal_exit();
-}
-
 /**
  * Special menu page callback for wrapping simplewebservices hook menu items.
  */
-function simplewebservice_page_json_callback() {
+function simplewebservice_delivery_json_callback() {
 
   $router_item = menu_get_item();
 
@@ -62,7 +54,9 @@ function simplewebservice_page_json_callback() {
     drupal_exit();
   }
 
+
   // make sur we accept external http requests.
+  header('Content-Type', 'application/json');
   header('Access-Control-Allow-Origin: *');
   header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
   header('Access-Control-Allow-Headers: Origin, Content-Type, Accept, Authorization, X-Request-With');
@@ -71,7 +65,25 @@ function simplewebservice_page_json_callback() {
   $callback = str_replace("%method", $_SERVER['REQUEST_METHOD'], $router_item['theme_arguments']['page callback']);
   $response = call_user_func_array($callback, $router_item['page_arguments']);
 
-  drupal_json_output($response);
+  drupal_alter('simplewebservice_response', $response);
+
+  $json = drupal_json_encode($response);
+
+  // put files in cache.
+  if ($_SERVER['REQUEST_METHOD'] == 'GET') {
+
+    if (!is_writable('api')) {
+      print 'api' . ' is not writable';exit;
+    }
+    $href_array = explode('/', $router_item['href']);
+    array_pop($href_array);
+    $filepath = implode(DIRECTORY_SEPARATOR, $href_array);
+    @mkdir($filepath, 0775, TRUE);
+    file_put_contents($router_item['href'], $json);
+
+  }
+  echo $json;
+
   drupal_exit();
 
 }
@@ -80,8 +92,4 @@ function get_datas_from_json_post_request() {
   $http_body = file_get_contents("php://input");
   $values = json_decode($http_body);
   return $values;
-}
-
-function simplewebservice_page_unknwon_callback() {
-  return "Unknown page callback";
 }
