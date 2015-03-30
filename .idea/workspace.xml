@@ -35,7 +35,7 @@
       <file leaf-file-name=".htaccess" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/.htaccess">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="70" column="25" selection-start="2447" selection-end="2447" vertical-scroll-proportion="0.24742268" vertical-offset="1116" max-vertical-offset="2790">
+            <state line="70" column="40" selection-start="2462" selection-end="2462" vertical-scroll-proportion="0.49484536" vertical-offset="972" max-vertical-offset="2790">
               <folding />
             </state>
           </provider>
@@ -220,24 +220,6 @@
             </PATH_ELEMENT>
             <PATH_ELEMENT>
               <option name="myItemId" value="themes" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="drupal7" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="drupal-rest" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="api" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="users" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -668,7 +650,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/.htaccess">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="70" column="25" selection-start="2447" selection-end="2447" vertical-scroll-proportion="0.24742268" vertical-offset="1116" max-vertical-offset="2790">
+        <state line="70" column="40" selection-start="2462" selection-end="2462" vertical-scroll-proportion="0.49484536" vertical-offset="972" max-vertical-offset="2790">
           <folding />
         </state>
       </provider>

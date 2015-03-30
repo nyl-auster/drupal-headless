@@ -68,7 +68,7 @@ DirectoryIndex index.php index.html index.htm
   # even when running as CGI or FastCGI.
   RewriteRule ^ - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
 
-  RewriteRule api/users/^ api/users/index
+  RewriteRule api/users$ api/users/index
 
   # Block access to "hidden" directories whose names begin with a period. This
   # includes directories used by version control systems such as Subversion or
