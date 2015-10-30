@@ -1,8 +1,6 @@
 <?php
 /**
- * Parse a new "webservice" key coming from a hook_menu() menu item.
- * You have to define your hook_menu as usual, simply add a "webservice" key, that allow
- * to describe some additionnals behaviors for those special menu items.
+ * Parse a new "http methods" key coming from a hook_menu() menu item.
  *
  * @code
  * $items['api/users/%/%'] = array(
@@ -54,7 +52,6 @@ function simplewebservice_delivery_json_callback() {
     drupal_exit();
   }
 
-
   // make sur we accept external http requests.
   header('Content-Type', 'application/json');
   header('Access-Control-Allow-Origin: *');
@@ -70,7 +67,7 @@ function simplewebservice_delivery_json_callback() {
   $json = drupal_json_encode($response);
 
   // put files in cache.
-  if ($_SERVER['REQUEST_METHOD'] == 'GET') {
+  /*if ($_SERVER['REQUEST_METHOD'] == 'GET') {
 
     if (!is_writable('api')) {
       print 'api' . ' is not writable';exit;
@@ -82,8 +79,8 @@ function simplewebservice_delivery_json_callback() {
     file_put_contents($router_item['href'], $json);
 
   }
+  */
   echo $json;
-
   drupal_exit();
 
 }
@@ -93,3 +90,9 @@ function get_datas_from_json_post_request() {
   $values = json_decode($http_body);
   return $values;
 }
+
+
+
+
+
+

@@ -1,0 +1,6 @@
+name = Simple webservice example implementation
+description = serves nodes and users as json
+core = 7.x
+
+
+

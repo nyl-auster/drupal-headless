@@ -1,0 +1,52 @@
+<?php
+
+/**
+ * Implements hook_menu()
+ */
+function simplewebservice_example_menu() {
+  $items = [];
+  $items['api/users'] = array(
+    'http methods' => array('GET'),
+    'access arguments' => array('access content'),
+    'page callback'    => 'simplewebservice_example_api_users',
+    );
+  $items['api/nodes'] = array(
+    'http methods' => array('GET'),
+    'access arguments' => array('access content'),
+    'page callback'    => 'simplewebservice_example_api_nodes',
+    );
+  return $items;
+}
+
+function simplewebservice_example_api_users() {
+  return entity_load('user');
+  return ['test', 'test', 'test 2'];
+}
+
+function simplewebservice_example_api_nodes() {
+  $query = db_select('node', 'n');
+  $query->addField('n', 'nid');
+  // take care of node access
+  $query->addTag('node_access');
+  // example join for taxonomy of custom fields :
+  // $query->join('taxonomy_index', 'ti', 'n.nid = ti.nid');
+  // $query->join('field_data_field_article_date', 'field_date', 'n.nid = field_date.entity_id');
+  // seulement les articles publiés
+  $query->condition('status', 1);
+  $query->condition('type', 'article');
+  //$query->condition('tid', $this->tids, 'IN');
+  // order by date DESC
+  $query->orderBy('created', 'DESC');
+  // supprimer les doublons si il y en a.
+  $query->groupBy('n.nid');
+  // éxécuter réellement la requete.
+  $result = $query->execute();
+  $nodes = array();
+  foreach ($result as $row) {
+    $nodes[] = node_load($row->nid);
+  }
+  return $nodes;
+} 
+
+
+
