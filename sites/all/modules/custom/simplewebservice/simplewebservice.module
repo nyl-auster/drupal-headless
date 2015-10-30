@@ -82,7 +82,6 @@ function simplewebservice_delivery_json_callback() {
   */
   echo $json;
   drupal_exit();
-
 }
 
 function get_datas_from_json_post_request() {

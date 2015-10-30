@@ -8,38 +8,87 @@ function simplewebservice_example_menu() {
   $items['api/v1/users'] = array(
     'http methods' => array('GET'),
     'access arguments' => array('access content'),
-    'page callback'    => 'simplewebservice_example_api_users',
+    'page callback'    => 'simplewebservice_example_api_users_list',
+    );
+    $items['api/v1/users/%'] = array(
+    'http methods' => array('GET'),
+    'access arguments' => array('access content'),
+    'page arguments' => array(3),
+    'page callback'    => 'simplewebservice_example_api_users_single',
     );
   $items['api/v1/nodes'] = array(
     'http methods' => array('GET'),
     'access arguments' => array('access content'),
-    'page callback'    => 'simplewebservice_example_api_nodes',
+    'page callback'    => 'simplewebservice_example_api_nodes_list',
+    );
+  $items['api/v1/nodes/%'] = array(
+    'http methods' => array('GET'),
+    'access arguments' => array('access content'),
+    'page callback'    => 'simplewebservice_example_api_nodes_single',
+    'page arguments' => [3]
     );
   return $items;
 }
 
-function simplewebservice_example_api_users() {
+function simplewebservice_example_api_users_list() {
   return [
   'datas' => array_values(entity_load('user'))
   ];
 }
 
-function simplewebservice_example_api_nodes() {
+function simplewebservice_example_api_users_single($uid) {
+  $user = user_load($uid);
+  if ($user) {
+    return ['datas' => $user];
+  }
+  else {
+    header("HTTP/1.0 404 Not Found");
+    return ['datas' => []];
+  }
+}
+
+function simplewebservice_example_api_nodes_single($nid) {
+  $node = node_load($nid);
+  if ($node) {
+    return ['datas' => $node];
+  }
+  else {
+    header("HTTP/1.0 404 Not Found");
+    return ['datas' => []];
+  }
+}
+
+function simplewebservice_example_api_nodes_list() {
+
+  // variables for the query
+  $orderByDirection = !empty($_GET['orderDesc']) ? 'ASC' : 'DESC';
+  $orderByField = !empty($_GET['orderBy']) ? $_GET['orderBy'] : 'created';
+  $type = !empty($_GET['type']) ? $_GET['type'] : 'article';
+  $limit = !empty($_GET['limit']) ? $_GET['limit'] : null;
+
   $query = db_select('node', 'n');
   $query->addField('n', 'nid');
   // take care of node access
   $query->addTag('node_access');
+
   // example join for taxonomy of custom fields :
   // $query->join('taxonomy_index', 'ti', 'n.nid = ti.nid');
   // $query->join('field_data_field_article_date', 'field_date', 'n.nid = field_date.entity_id');
-  // seulement les articles publiés
   $query->condition('status', 1);
-  $query->condition('type', 'article');
-  //$query->condition('tid', $this->tids, 'IN');
-  // order by date DESC
-  $query->orderBy('created', 'DESC');
+
+  $query->condition('type', $type);
+
+  // $query->condition('tid', $this->tids, 'IN');
+
   // supprimer les doublons si il y en a.
   $query->groupBy('n.nid');
+
+  // seulement les articles publiés
+  if ($limit) {
+    $query->range(0, $limit);
+  }
+  $query->orderBy($orderByField, $orderByDirection);
+
   // éxécuter réellement la requete.
   $result = $query->execute();
   $nodes = array();
@@ -48,6 +97,4 @@ function simplewebservice_example_api_nodes() {
   }
   return $nodes;
 } 
-
-
 
