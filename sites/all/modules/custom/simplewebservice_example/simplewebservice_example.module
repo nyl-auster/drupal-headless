@@ -5,12 +5,12 @@
  */
 function simplewebservice_example_menu() {
   $items = [];
-  $items['api/users'] = array(
+  $items['api/v1/users'] = array(
     'http methods' => array('GET'),
     'access arguments' => array('access content'),
     'page callback'    => 'simplewebservice_example_api_users',
     );
-  $items['api/nodes'] = array(
+  $items['api/v1/nodes'] = array(
     'http methods' => array('GET'),
     'access arguments' => array('access content'),
     'page callback'    => 'simplewebservice_example_api_nodes',
@@ -19,8 +19,9 @@ function simplewebservice_example_menu() {
 }
 
 function simplewebservice_example_api_users() {
-  return entity_load('user');
-  return ['test', 'test', 'test 2'];
+  return [
+  'datas' => array_values(entity_load('user'))
+  ];
 }
 
 function simplewebservice_example_api_nodes() {
